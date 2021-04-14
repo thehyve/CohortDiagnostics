@@ -1,39 +1,39 @@
 -- Drop old tables if exist
 
-DROP TABLE IF EXISTS analysis_ref;
-DROP TABLE IF EXISTS cohort;
-DROP TABLE IF EXISTS cohort_count;
-DROP TABLE IF EXISTS cohort_overlap;
-DROP TABLE IF EXISTS concept;
-DROP TABLE IF EXISTS concept_ancestor;
-DROP TABLE IF EXISTS concept_relationship;
-DROP TABLE IF EXISTS concept_sets;
-DROP TABLE IF EXISTS concept_synonym;
-DROP TABLE IF EXISTS covariate_ref;
-DROP TABLE IF EXISTS covariate_value;
-DROP TABLE IF EXISTS database;
-DROP TABLE IF EXISTS domain;
-DROP TABLE IF EXISTS incidence_rate;
-DROP TABLE IF EXISTS included_source_concept;
-DROP TABLE IF EXISTS inclusion_rule_stats;
-DROP TABLE IF EXISTS index_event_breakdown;
-DROP TABLE IF EXISTS orphan_concept;
-DROP TABLE IF EXISTS phenotype_description;
-DROP TABLE IF EXISTS relationship;
-DROP TABLE IF EXISTS temporal_analysis_ref;
-DROP TABLE IF EXISTS temporal_covariate_ref;
-DROP TABLE IF EXISTS temporal_covariate_value;
-DROP TABLE IF EXISTS temporal_time_ref;
-DROP TABLE IF EXISTS time_distribution;
-DROP TABLE IF EXISTS visit_context;
-DROP TABLE IF EXISTS vocabulary;
+DROP TABLE IF EXISTS {@do} ? {@prefix_analysis_ref} : {analysis_ref};
+DROP TABLE IF EXISTS {@do} ? {@prefix_cohort} : {cohort};
+DROP TABLE IF EXISTS {@do} ? {@prefix_cohort_count} : {cohort_count};
+DROP TABLE IF EXISTS {@do} ? {@prefix_cohort_overlap} : {cohort_overlap};
+DROP TABLE IF EXISTS {@do} ? {@prefix_concept} : {concept};
+DROP TABLE IF EXISTS {@do} ? {@prefix_concept_ancestor} : {concept_ancestor};
+DROP TABLE IF EXISTS {@do} ? {@prefix_concept_relationship} : {concept_relationship};
+DROP TABLE IF EXISTS {@do} ? {@prefix_concept_sets} : {concept_sets};
+DROP TABLE IF EXISTS {@do} ? {@prefix_concept_synonym} : {concept_synonym};
+DROP TABLE IF EXISTS {@do} ? {@prefix_covariate_ref} : {covariate_ref};
+DROP TABLE IF EXISTS {@do} ? {@prefix_covariate_value} : {covariate_value};
+DROP TABLE IF EXISTS {@do} ? {@prefix_database} : {database};
+DROP TABLE IF EXISTS {@do} ? {@prefix_domain} : {domain};
+DROP TABLE IF EXISTS {@do} ? {@prefix_incidence_rate} : {incidence_rate};
+DROP TABLE IF EXISTS {@do} ? {@prefix_included_source_concept} : {included_source_concept};
+DROP TABLE IF EXISTS {@do} ? {@prefix_inclusion_rule_stats } : {inclusion_rule_stats};
+DROP TABLE IF EXISTS {@do} ? {@prefix_index_event_breakdown} : {index_event_breakdown};
+DROP TABLE IF EXISTS {@do} ? {@prefix_orphan_concept} : {orphan_concept};
+DROP TABLE IF EXISTS {@do} ? {@prefix_phenotype_description} : {phenotype_description};
+DROP TABLE IF EXISTS {@do} ? {@prefix_relationship} : {relationship};
+DROP TABLE IF EXISTS {@do} ? {@prefix_temporal_analysis_ref} : {temporal_analysis_ref};
+DROP TABLE IF EXISTS {@do} ? {@prefix_temporal_covariate_ref} : {temporal_covariate_ref};
+DROP TABLE IF EXISTS {@do} ? {@prefix_temporal_covariate_value} : { temporal_covariate_value};
+DROP TABLE IF EXISTS {@do} ? {@prefix_temporal_time_ref} : {temporal_time_ref};
+DROP TABLE IF EXISTS {@do} ? {@prefix_time_distribution} : {time_distribution};
+DROP TABLE IF EXISTS {@do} ? {@prefix_visit_context} : {visit_context};
+DROP TABLE IF EXISTS {@do} ? {@prefix_vocabulary} : {vocabulary};
 
 
 -- Create tables
 
 --Table analysis_ref
 
-CREATE TABLE analysis_ref (
+CREATE TABLE {@do} ? {@prefix_analysis_ref} : {analysis_ref} (
 			analysis_id BIGINT NOT NULL,
 			analysis_name VARCHAR(50) NOT NULL,
 			domain_id VARCHAR(20),
@@ -46,7 +46,7 @@ CREATE TABLE analysis_ref (
 
 --Table cohort
 
-CREATE TABLE cohort (
+CREATE TABLE {@do} ? {@prefix_cohort} : {cohort} (
 			phenotype_id BIGINT,
 			cohort_id BIGINT NOT NULL,
 			web_api_cohort_id BIGINT NOT NULL,
@@ -59,7 +59,7 @@ CREATE TABLE cohort (
 
 --Table cohort_count
 
-CREATE TABLE cohort_count (
+CREATE TABLE {@do} ? {@prefix_cohort_count} : {cohort_count} (
 			cohort_id BIGINT NOT NULL,
 			cohort_entries FLOAT NOT NULL,
 			cohort_subjects FLOAT NOT NULL,
@@ -69,7 +69,7 @@ CREATE TABLE cohort_count (
 
 --Table cohort_overlap
 
-CREATE TABLE cohort_overlap (
+CREATE TABLE {@do} ? {@prefix_cohort_overlap} : {cohort_overlap} (
 			either_subjects FLOAT NOT NULL,
 			both_subjects FLOAT NOT NULL,
 			t_only_subjects FLOAT NOT NULL,
@@ -87,7 +87,7 @@ CREATE TABLE cohort_overlap (
 
 --Table concept
 
-CREATE TABLE concept (
+CREATE TABLE {@do} ? {@prefix_concept} : {concept} (
 			concept_id INT NOT NULL,
 			concept_name VARCHAR(255) NOT NULL,
 			domain_id VARCHAR(20) NOT NULL,
@@ -103,7 +103,7 @@ CREATE TABLE concept (
 
 --Table concept_ancestor
 
-CREATE TABLE concept_ancestor (
+CREATE TABLE {@do} ? {@prefix_concept_ancestor} : {concept_ancestor} (
 			ancestor_concept_id BIGINT NOT NULL,
 			descendant_concept_id BIGINT NOT NULL,
 			min_levels_of_separation INT NOT NULL,
@@ -113,7 +113,7 @@ CREATE TABLE concept_ancestor (
 
 --Table concept_relationship
 
-CREATE TABLE concept_relationship (
+CREATE TABLE {@do} ? {@prefix_concept_relationship} : {concept_relationship} (
 			concept_id_1 INT NOT NULL,
 			concept_id_2 INT NOT NULL,
 			relationship_id VARCHAR(20) NOT NULL,
@@ -125,7 +125,7 @@ CREATE TABLE concept_relationship (
 
 --Table concept_sets
 
-CREATE TABLE concept_sets (
+CREATE TABLE {@do} ? {@prefix_concept_sets} : {concept_sets} (
 			cohort_id BIGINT NOT NULL,
 			concept_set_id INT NOT NULL,
 			concept_set_sql VARCHAR NOT NULL,
@@ -136,7 +136,7 @@ CREATE TABLE concept_sets (
 
 --Table concept_synonym
 
-CREATE TABLE concept_synonym (
+CREATE TABLE {@do} ? {@prefix_concept_synonym} : {concept_synonym} (
 			concept_id INT NOT NULL,
 			concept_synonym_name VARCHAR NOT NULL,
 			language_concept_id INT NOT NULL,
@@ -145,7 +145,7 @@ CREATE TABLE concept_synonym (
 
 --Table covariate_ref
 
-CREATE TABLE covariate_ref (
+CREATE TABLE {@do} ? {@prefix_covariate_ref} : {covariate_ref} (
 			covariate_id BIGINT NOT NULL,
 			covariate_name VARCHAR NOT NULL,
 			analysis_id INT NOT NULL,
@@ -155,7 +155,7 @@ CREATE TABLE covariate_ref (
 
 --Table covariate_value
 
-CREATE TABLE covariate_value (
+CREATE TABLE {@do} ? {@prefix_covariate_value} : {covariate_value} (
 			cohort_id BIGINT NOT NULL,
 			covariate_id BIGINT NOT NULL,
 			mean FLOAT NOT NULL,
@@ -166,7 +166,7 @@ CREATE TABLE covariate_value (
 
 --Table database
 
-CREATE TABLE database (
+CREATE TABLE {@do} ? {@prefix_database} : {database} (
 			database_id VARCHAR(20) NOT NULL,
 			database_name VARCHAR,
 			description VARCHAR,
@@ -176,7 +176,7 @@ CREATE TABLE database (
 
 --Table domain
 
-CREATE TABLE domain (
+CREATE TABLE {@do} ? {@prefix_domain} : {domain} (
 			domain_id VARCHAR(20) NOT NULL,
 			domain_name VARCHAR(255) NOT NULL,
 			domain_concept_id INT NOT NULL,
@@ -185,7 +185,7 @@ CREATE TABLE domain (
 
 --Table incidence_rate
 
-CREATE TABLE incidence_rate (
+CREATE TABLE {@do} ? {@prefix_incidence_rate} : {incidence_rate} (
 			cohort_count FLOAT NOT NULL,
 			person_years FLOAT NOT NULL,
 			gender VARCHAR,
@@ -199,7 +199,7 @@ CREATE TABLE incidence_rate (
 
 --Table included_source_concept
 
-CREATE TABLE included_source_concept (
+CREATE TABLE {@do} ? {@prefix_included_source_concept} : {included_source_concept} (
 			database_id VARCHAR(20) NOT NULL,
 			cohort_id BIGINT NOT NULL,
 			concept_set_id INT NOT NULL,
@@ -212,7 +212,7 @@ CREATE TABLE included_source_concept (
 
 --Table inclusion_rule_stats
 
-CREATE TABLE inclusion_rule_stats (
+CREATE TABLE {@do} ? {@prefix_inclusion_rule_stats} : {inclusion_rule_stats} (
 			rule_sequence_id INT NOT NULL,
 			rule_name VARCHAR(255) NOT NULL,
 			meet_subjects FLOAT NOT NULL,
@@ -226,7 +226,7 @@ CREATE TABLE inclusion_rule_stats (
 
 --Table index_event_breakdown
 
-CREATE TABLE index_event_breakdown (
+CREATE TABLE {@do} ? {@prefix_index_event_breakdown} : {index_event_breakdown} (
 			concept_id INT NOT NULL,
 			concept_count FLOAT NOT NULL,
 			cohort_id BIGINT NOT NULL,
@@ -236,7 +236,7 @@ CREATE TABLE index_event_breakdown (
 
 --Table orphan_concept
 
-CREATE TABLE orphan_concept (
+CREATE TABLE {@do} ? {@prefix_orphan_concept} : {orphan_concept} (
 			cohort_id BIGINT NOT NULL,
 			concept_set_id INT NOT NULL,
 			database_id VARCHAR(20) NOT NULL,
@@ -248,7 +248,7 @@ CREATE TABLE orphan_concept (
 
 --Table phenotype_description
 
-CREATE TABLE phenotype_description (
+CREATE TABLE {@do} ? {@prefix_phenotype_description} : {phenotype_description} (
 			phenotype_id BIGINT NOT NULL,
 			phenotype_name VARCHAR(255) NOT NULL,
 			referent_concept_id INT NOT NULL,
@@ -260,7 +260,7 @@ CREATE TABLE phenotype_description (
 
 --Table relationship
 
-CREATE TABLE relationship (
+CREATE TABLE {@do} ? {@prefix_relationship} : {relationship} (
 			relationship_id VARCHAR(20) NOT NULL,
 			relationship_name VARCHAR(255) NOT NULL,
 			is_hierarchical VARCHAR(1) NOT NULL,
@@ -272,7 +272,7 @@ CREATE TABLE relationship (
 
 --Table temporal_analysis_ref
 
-CREATE TABLE temporal_analysis_ref (
+CREATE TABLE {@do} ? {@prefix_temporal_analysis_ref} : {temporal_analysis_ref} (
 			analysis_id INT NOT NULL,
 			analysis_name VARCHAR(20) NOT NULL,
 			domain_id VARCHAR(20) NOT NULL,
@@ -283,7 +283,7 @@ CREATE TABLE temporal_analysis_ref (
 
 --Table temporal_covariate_ref
 
-CREATE TABLE temporal_covariate_ref (
+CREATE TABLE {@do} ? {@prefix_temporal_covariate_ref} : {temporal_covariate_ref} (
 			covariate_id BIGINT NOT NULL,
 			covariate_name VARCHAR NOT NULL,
 			analysis_id INT NOT NULL,
@@ -293,7 +293,7 @@ CREATE TABLE temporal_covariate_ref (
 
 --Table temporal_covariate_value
 
-CREATE TABLE temporal_covariate_value (
+CREATE TABLE {@do} ? {@prefix_temporal_covariate_value} : {temporal_covariate_value} (
 			cohort_id BIGINT NOT NULL,
 			time_id INT NOT NULL,
 			covariate_id BIGINT NOT NULL,
@@ -305,7 +305,7 @@ CREATE TABLE temporal_covariate_value (
 
 --Table temporal_time_ref
 
-CREATE TABLE temporal_time_ref (
+CREATE TABLE {@do} ? {@prefix_temporal_time_ref} : {temporal_time_ref} (
 			time_id INT NOT NULL,
 			start_day FLOAT NOT NULL,
 			end_day FLOAT NOT NULL,
@@ -314,7 +314,7 @@ CREATE TABLE temporal_time_ref (
 
 --Table time_distribution
 
-CREATE TABLE time_distribution (
+CREATE TABLE {@do} ? {@prefix_time_distribution} : {time_distribution} (
 			cohort_id BIGINT NOT NULL,
 			count_value FLOAT NOT NULL,
 			min_value FLOAT NOT NULL,
@@ -333,7 +333,7 @@ CREATE TABLE time_distribution (
 
 --Table visit_context
 
-CREATE TABLE visit_context (
+CREATE TABLE {@do} ? {@prefix_visit_context} : {visit_context} (
 			cohort_id BIGINT NOT NULL,
 			visit_concept_id INT NOT NULL,
 			visit_context VARCHAR(20) NOT NULL,
@@ -344,7 +344,7 @@ CREATE TABLE visit_context (
 
 --Table vocabulary
 
-CREATE TABLE vocabulary (
+CREATE TABLE {@do} ? {@prefix_vocabulary} : {vocabulary} (
 			vocabulary_id VARCHAR(20) NOT NULL,
 			vocabulary_name VARCHAR(255) NOT NULL,
 			vocabulary_reference VARCHAR,

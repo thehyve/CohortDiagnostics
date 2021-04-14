@@ -142,11 +142,13 @@ appendNewRows <- function(data, newData, tableName, specifications = getResultsD
 #'
 #' @template Connection 
 #' @param schema         The schema on the postgres server where the tables will be created.
+#' @param prefix         (Optional) Prefix to add to table names
 #'
 #' @export
 createResultsDataModel <- function(connection = NULL,
                                    connectionDetails = NULL,
-                                   schema) {
+                                   schema,
+                                   prefix = NULL) {
   if (is.null(connection)) {
     if (!is.null(connectionDetails)) {
       connection <- DatabaseConnector::connect(connectionDetails)
@@ -164,6 +166,7 @@ createResultsDataModel <- function(connection = NULL,
   DatabaseConnector::executeSql(connection, sprintf("SET search_path TO %s;", schema), progressBar = FALSE, reportOverallTime = FALSE)
   pathToSql <- system.file("sql", "postgresql", "CreateResultsDataModel.sql", package = "CohortDiagnostics")
   sql <- SqlRender::readSql(pathToSql)
+  sql <- SqlRender::render(sql, do = !is.null(prefix), prefix = prefix)
   DatabaseConnector::executeSql(connection, sql)
 }
 
@@ -184,6 +187,7 @@ naToEmpty <- function(x) {
 #'                            \code{\link[DatabaseConnector]{createConnectionDetails}} function in the
 #'                            DatabaseConnector package. 
 #' @param schema         The schema on the postgres server where the tables will be created.
+#' @param prefix         (Optional) Prefix to add to table names
 #' @param zipFileName    The name of the zip file.
 #' @param forceOverWriteOfSpecifications  If TRUE, specifications of the phenotypes, cohort definitions, and analysis 
 #'                       will be overwritten if they already exist on the database. Only use this if these specifications
@@ -198,6 +202,7 @@ naToEmpty <- function(x) {
 #' @export
 uploadResults <- function(connectionDetails = NULL,
                           schema,
+                          prefix = NULL,
                           zipFileName, 
                           forceOverWriteOfSpecifications = FALSE,
                           purgeSiteDataBeforeUploading = TRUE,
@@ -232,7 +237,7 @@ uploadResults <- function(connectionDetails = NULL,
     if (purgeSiteDataBeforeUploading && "database_id" %in% primaryKey) {
       deleteAllRecordsForDatabaseId(connection = connection, 
                                     schema = schema, 
-                                    tableName = tableName, 
+                                    tableName = ifelse(is.null(prefix), tableName, paste0(prefix, "_", tableName)), 
                                     databaseId = databaseId)
     }
     
@@ -240,7 +245,8 @@ uploadResults <- function(connectionDetails = NULL,
     if (csvFileName %in% list.files(unzipFolder)) {
       env <- new.env()
       env$schema <- schema
-      env$tableName <- tableName
+      env$tableName <- ifelse(is.null(prefix), tableName, paste0(prefix, "_", tableName))
+      env$rawTableName <- tableName
       env$primaryKey <- primaryKey
       if (purgeSiteDataBeforeUploading && "database_id" %in% primaryKey) {
         env$primaryKeyValuesInDb <- NULL
@@ -249,7 +255,7 @@ uploadResults <- function(connectionDetails = NULL,
         sql <- SqlRender::render(sql = sql,
                                  primary_key = primaryKey,
                                  schema = schema,
-                                 table_name = tableName)
+                                 table_name = ifelse(is.null(prefix), tableName, paste0(prefix, "_", tableName)))
         primaryKeyValuesInDb <- DatabaseConnector::querySql(connection, sql)
         colnames(primaryKeyValuesInDb) <- tolower(colnames(primaryKeyValuesInDb))
         env$primaryKeyValuesInDb <- primaryKeyValuesInDb
@@ -259,11 +265,11 @@ uploadResults <- function(connectionDetails = NULL,
         ParallelLogger::logInfo("- Preparing to upload rows ", pos, " through ", pos + nrow(chunk) - 1)
         
         checkColumnNames(table = chunk, 
-                         tableName = env$tableName, 
+                         tableName = env$rawTableName, 
                          zipFileName = zipFileName,
                          specifications = specifications)
         chunk <- checkAndFixDataTypes(table = chunk, 
-                                        tableName = env$tableName, 
+                                        tableName = env$rawTableName, 
                                         zipFileName = zipFileName,
                                         specifications = specifications)
         chunk <- checkAndFixDuplicateRows(table = chunk, 
