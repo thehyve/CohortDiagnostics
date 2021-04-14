@@ -227,26 +227,30 @@ uploadResults <- function(connectionDetails = NULL,
   }
   
   uploadTable <- function(tableName) {
+    
+    baseTableName <- tableName
+    tableName <- ifelse(is.null(prefix), tableName, paste0(prefix, "_", tableName))
+    
     ParallelLogger::logInfo("Uploading table ", tableName)
 
     primaryKey <- specifications %>%
-      filter(.data$tableName == !!tableName & .data$primaryKey == "Yes") %>%
+      filter(.data$tableName == !!baseTableName & .data$primaryKey == "Yes") %>%
       select(.data$fieldName) %>%
       pull()
     
     if (purgeSiteDataBeforeUploading && "database_id" %in% primaryKey) {
       deleteAllRecordsForDatabaseId(connection = connection, 
                                     schema = schema, 
-                                    tableName = ifelse(is.null(prefix), tableName, paste0(prefix, "_", tableName)), 
+                                    tableName = tableName, 
                                     databaseId = databaseId)
     }
     
-    csvFileName <- paste0(tableName, ".csv")
+    csvFileName <- paste0(baseTableName, ".csv")
     if (csvFileName %in% list.files(unzipFolder)) {
       env <- new.env()
       env$schema <- schema
-      env$tableName <- ifelse(is.null(prefix), tableName, paste0(prefix, "_", tableName))
-      env$rawTableName <- tableName
+      env$tableName <- tableName
+      env$baseTableName <- baseTableName
       env$primaryKey <- primaryKey
       if (purgeSiteDataBeforeUploading && "database_id" %in% primaryKey) {
         env$primaryKeyValuesInDb <- NULL
@@ -255,7 +259,7 @@ uploadResults <- function(connectionDetails = NULL,
         sql <- SqlRender::render(sql = sql,
                                  primary_key = primaryKey,
                                  schema = schema,
-                                 table_name = ifelse(is.null(prefix), tableName, paste0(prefix, "_", tableName)))
+                                 table_name = tableName)
         primaryKeyValuesInDb <- DatabaseConnector::querySql(connection, sql)
         colnames(primaryKeyValuesInDb) <- tolower(colnames(primaryKeyValuesInDb))
         env$primaryKeyValuesInDb <- primaryKeyValuesInDb
@@ -265,21 +269,21 @@ uploadResults <- function(connectionDetails = NULL,
         ParallelLogger::logInfo("- Preparing to upload rows ", pos, " through ", pos + nrow(chunk) - 1)
         
         checkColumnNames(table = chunk, 
-                         tableName = env$rawTableName, 
+                         tableName = env$baseTableName, 
                          zipFileName = zipFileName,
                          specifications = specifications)
         chunk <- checkAndFixDataTypes(table = chunk, 
-                                        tableName = env$rawTableName, 
+                                        tableName = env$baseTableName, 
                                         zipFileName = zipFileName,
                                         specifications = specifications)
         chunk <- checkAndFixDuplicateRows(table = chunk, 
-                                            tableName = env$tableName, 
+                                            tableName = env$baseTableName, 
                                             zipFileName = zipFileName,
                                             specifications = specifications) 
         
         # Primary key fields cannot be NULL, so for some tables convert NAs to empty:
         toEmpty <- specifications %>%
-          filter(.data$tableName == env$tableName & .data$emptyIsNa == "No") %>%
+          filter(.data$tableName == env$baseTableName & .data$emptyIsNa == "No") %>%
           select(.data$fieldName) %>%
           pull()
         if (length(toEmpty) > 0) {
