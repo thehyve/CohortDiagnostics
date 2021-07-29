@@ -28,7 +28,7 @@ Imports:
   pool,
   readr (>= 1.4.0),
   RJSONIO,
-  rlang,
+  rlang (>= 0.4.5),
   ROhdsiWebApi (>= 1.2.0),
   SqlRender (>= 1.7.0),
   stringr,
