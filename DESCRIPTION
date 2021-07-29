@@ -20,9 +20,9 @@ Imports:
   Andromeda,
   checkmate,
   CirceR,
-  clock,
+  clock (>= 0.4.0),
   digest,
-  dplyr (>= 1.0.0),
+  dplyr (>= 0.8.5),
   methods,
   ParallelLogger (>= 2.0.0),
   pool,
@@ -54,6 +54,7 @@ Suggests:
   withr,
   zip
 Remotes:
+  ohdsi/Andromeda,
   ohdsi/Eunomia,
   ohdsi/FeatureExtraction,
   ohdsi/ROhdsiWebApi,
